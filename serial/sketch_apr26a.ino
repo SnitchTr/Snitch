@@ -1,12 +1,6 @@
 #include <Servo.h>
 const int trig = 10;
 const int echo = 11;
-const int pwmleftmotorpin = 9;
-const int pleftmotorpin = 13;
-const int nleftmotorpin = 12;
-const int pwmrightmotorpin = 3;
-const int prightmotorpin = 8;
-const int nrightmotorpin = 7;
 const int angvar = 1;
 int distance;
 int distance_front;
@@ -67,32 +61,4 @@ int llegir_distancia() {
    
    distanceCm = duration * 10 / 292/ 2;   //convertimos a distancia, en cm
    return distanceCm;
-}
-void leftmotor_foward(int i){
-analogWrite(pwmleftmotorpin, i);
-digitalWrite(pleftmotorpin, HIGH);
-digitalWrite(nleftmotorpin, LOW);
-}
-void rightmotor_foward(int i){
-analogWrite(pwmrightmotorpin, i);
-digitalWrite(prightmotorpin, HIGH);
-digitalWrite(nrightmotorpin, LOW);
-}
-void leftmotor_back(int i){
-  analogWrite(pwmleftmotorpin, i);
-digitalWrite(pleftmotorpin, LOW);
-digitalWrite(nleftmotorpin, HIGH);
-}
-void rightmotor_back(int i){
-  analogWrite(pwmrightmotorpin, i);
-digitalWrite(prightmotorpin, LOW);
-digitalWrite(nrightmotorpin, HIGH);
-}
-void leftmotor_stop(){
-  digitalWrite(pleftmotorpin, LOW);
-digitalWrite(nleftmotorpin, LOW);
-}
-void rightmotor_stop(){
-  digitalWrite(prightmotorpin, LOW);
-digitalWrite(nrightmotorpin, LOW);
 }
