@@ -7,6 +7,7 @@ const int nleftmotorpin = 12;
 const int pwmrightmotorpin = 3;
 const int prightmotorpin = 8;
 const int nrightmotorpin = 7;
+const int angvar = 1;
 int distance;
 int distance_front;
 int distance_left;
@@ -35,7 +36,7 @@ Serial.print("X");
 Serial.print(posx);
 Serial.print("Y");
 Serial.println(posy);
-i = i+45;
+i = i+angvar;
 }
 Serial.print("done");
 for(int i=180;i>0;){
@@ -50,7 +51,7 @@ Serial.print(posx);
 Serial.print("Y");
 Serial.print(posy);
 Serial.println(" ");
-i = i -45;
+i = i-angvar;
 }
 }
 int llegir_distancia() {
