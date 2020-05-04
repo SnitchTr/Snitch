@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 import serial
-ser = serial.Serial('COM4',baudrate = 9600, timeout=1)
+ser = serial.Serial('/dev/ttyACM0',baudrate = 9600, timeout=1)
 while 1:
     line = ser.readline().decode("ascii")
     if "done" in line: break
