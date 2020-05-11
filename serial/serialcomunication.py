@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
 import math
 import serial
-ser = serial.Serial('COM4',baudrate = 9600, timeout=1)
+ser = serial.Serial('/dev/ttyACM0',baudrate = 9600, timeout=1)
 while 1:
-    line = ser.readline().decode("ascii")
+    try:
+         line = ser.readline().decode("ascii")
+    except:continue
     if "done" in line: break
+    if not line.startswith("D"):continue
     distance = int(line[(line.find("D")+1):(line.find("A"))])
     angle = int(line[(line.find("A")+1):(line.find("X"))])
     posx = int(line[(line.find("X")+1):(line.find("Y"))])
@@ -16,5 +19,5 @@ while 1:
     plt.scatter(x,y,c='r', marker='.')
     plt.plot([x,posx],[y,posy],c = 'b', marker = ',')
 
-plt.savefig('C:/Users/Arnau Ortega/Desktop/fig.png')
+plt.savefig('/home/pi/Desktop/fig.png')
 exit()
