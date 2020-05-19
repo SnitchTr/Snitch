@@ -4,6 +4,9 @@ const int trig = 10;
 const int echo = 11;
 const int avar = 1;
 const int maxdistance = 30000;
+const int minangle = 0;
+const int maxangle = 180;
+const int baudrate = 9600;
 const float speedofsound = 0.343;
 int distance;
 int posx = 0;
@@ -13,11 +16,11 @@ Servo servo;
 void setup() {
 
   servo.attach(servopin);
-  Serial.begin(9600);
+  Serial.begin(baudrate);
 
 }
 void loop() {
-  for(int angle = 0;angle<180;){
+  for(int angle = minangle;angle<maxangle;){
     servo.write(angle);
     distance = llegir_distancia();
     if(distance < maxdistance){
