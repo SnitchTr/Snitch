@@ -1,64 +1,51 @@
 #include <Servo.h>
+const int servopin = 6;
 const int trig = 10;
 const int echo = 11;
-const int angvar = 1;
+const int avar = 1;
+const int maxdistance = 30000;
+const float speedofsound = 0.343;
 int distance;
-int distance_front;
-int distance_left;
-int distance_right;
 int posx = 0;
 int posy = 0;
-// Declaramos la variable para controlar el servo
 Servo servo;
  
 void setup() {
 
-  servo.attach(6);
+  servo.attach(servopin);
   Serial.begin(9600);
 
 }
- 
 void loop() {
-for(int i = 0;i<180;){
-  distance = llegir_distancia();
-  servo.write(i);
-Serial.print("D");
-Serial.print(distance);
-Serial.print("A");
-Serial.print(i);
-Serial.print("X");
-Serial.print(posx);
-Serial.print("Y");
-Serial.println(posy);
-i = i+angvar;
+  for(int angle = 0;angle<180;){
+    servo.write(angle);
+    distance = llegir_distancia();
+    if(distance < maxdistance){
+    Serial.print("D");
+    Serial.print(distance);
+    Serial.print("A");
+    Serial.print(angle);
+    Serial.print("X");
+    Serial.print(posx);
+    Serial.print("Y");
+    Serial.println(posy);
+    }
+    angle = angle+ avar;
+  }
+  Serial.println("done");
+
 }
-Serial.print("done");
-for(int i=180;i>0;){
-   distance = llegir_distancia();
-  servo.write(i);
-  Serial.print("D");
-Serial.print(distance);
-Serial.print("A");
-Serial.print(i);
-Serial.print("X");
-Serial.print(posx);
-Serial.print("Y");
-Serial.print(posy);
-Serial.println(" ");
-i = i-angvar;
-}
-}
-int llegir_distancia() {
-   long duration, distanceCm;
+float llegir_distancia() {
+   int duration, distancemm;
    
-   digitalWrite(trig, LOW);  //para generar un pulso limpio ponemos a LOW 4us
+   digitalWrite(trig, LOW);  
    delayMicroseconds(4);
-   digitalWrite(trig, HIGH);  //generamos Trigger (disparo) de 10us
+   digitalWrite(trig, HIGH);  
    delayMicroseconds(10);
    digitalWrite(trig, LOW);
    
-   duration = pulseIn(echo, HIGH);  //medimos el tiempo entre pulsos, en microsegundos
+   duration = pulseIn(echo, HIGH);  
    
-   distanceCm = duration * 10 / 292/ 2;   //convertimos a distancia, en cm
-   return distanceCm;
+   distancemm = duration * speedofsound;  
+   return distancemm;
 }
