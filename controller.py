@@ -7,22 +7,9 @@ PWMdreta = board.get_pin("d:11:p")
 pinesquerraf = board.get_pin("d:8:o")
 pinesquerrab = board.get_pin("d:7:o")
 PWMesquerra = board.get_pin("d:10:p")
-def connect(self):
-    self.is_up_arrow_pressed = False
-    self.is_down_arrow_pressed = False
-    self.is_right_arrow_pressed = False
-    self.is_left_arrow_pressed = False
-    self.is_R1_pressed = False
-    pass
 
 
-def connect(self):
-    self.is_up_arrow_pressed = False
-    self.is_down_arrow_pressed = False
-    self.is_right_arrow_pressed = False
-    self.is_left_arrow_pressed = False
-    self.is_R1_pressed = False
-    
+ 
 class State:
     def __init__(self):
         self.PWM = 0
@@ -35,6 +22,11 @@ class State:
 
 class MyController(Controller):
     
+    is_up_arrow_pressed = False
+    is_down_arrow_pressed = False
+    is_right_arrow_pressed = False
+    is_left_arrow_pressed = False
+    is_R1_pressed = False
     def __init__(self, **kwargs):
         Controller.__init__(self, **kwargs)
         
@@ -76,6 +68,9 @@ class MyController(Controller):
     def on_up_down_arrow_release(self):
         self.is_up_arrow_pressed = False
         self.is_down_arrow_pressed = False
+        self.rightmotorstop()
+        self.leftmotorstop()
+        
 
     def on_right_arrow_press(self):
         self.is_right_arrow_pressed = True
@@ -86,6 +81,8 @@ class MyController(Controller):
     def on_left_right_arrow_release(self):
         self.is_right_arrow_pressed = False
         self.is_left_arrow_pressed = False
+        self.rightmotorstop()
+        self.leftmotorstop()
     def on_L1_press(self):
         self.is_R1_pressed = True
     def on_L1_release(self):
@@ -94,11 +91,7 @@ class MyController(Controller):
         self.PWM = 0
 
     def on_L2_press(self,value):
-        self.is_up_arrow_pressed = False
-        self.is_down_arrow_pressed = False
-        self.is_right_arrow_pressed = False
-        self.is_left_arrow_pressed = False
-        self.is_R1_pressed = False
+        if value == -32767: self.PWM = 0
         self.PWM = ((((value + 32767)/(32767*2))*145)+60)/255
         if self.is_up_arrow_pressed == True:
             self.rightmotorf()
@@ -124,21 +117,11 @@ class MyController(Controller):
             self.rightmotorstop()
             self.leftmotorstop()
     def on_L2_release(self):
-        self.is_up_arrow_pressed = False
-        self.is_down_arrow_pressed = False
-        self.is_right_arrow_pressed = False
-        self.is_left_arrow_pressed = False
-        self.is_R1_pressed = False
         self.PWM = 0
     
     def on_share_press(self):
-        self.is_up_arrow_pressed = False
-        self.is_down_arrow_pressed = False
-        self.is_right_arrow_pressed = False
-        self.is_left_arrow_pressed = False
-        self.is_R1_pressed = False
-        self.PWM = 0
-
+        self.rightmotorstop()
+        self.leftmotorstop()
     def on_share_release(self):
         exit()
 
