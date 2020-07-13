@@ -99,8 +99,6 @@ class MyController(Controller):
         self.is_R1_pressed = False
     def on_x_press(self):
         humancheck()
-
-
     def on_L2_press(self,value):
         if value == -32767: self.PWM = 0
         self.PWM = ((((value + MaxAnalog)/(MaxAnalog*2))*(MaxPWM-MinPWM)+MinPWM)/MaxPWM)
