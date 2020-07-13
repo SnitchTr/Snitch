@@ -1,3 +1,4 @@
+# Import packages
 import os
 import argparse
 import cv2
@@ -6,11 +7,10 @@ import sys
 import glob
 import importlib.util
 from picamera import PiCamera
-pic_name = 0
 def humancheck():
     human = False
     #define a name for the snapshot by giving a number
-    img = "/home/pi/Desktop/snapshots/"+ str(self.pic_name) + ".jpg"
+    img = "/home/pi/Desktop/snapshots/"+ str(pic_name) + ".jpg"
     camera.capture(img)
     pic_name= pic_name +1
     # Define and parse input argumets
