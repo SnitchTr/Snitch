@@ -22,8 +22,14 @@ MinAnalog = -32767
 MaxPWM = 255
 MinPWM = 60
 camera = PiCamera()
-
-
+folder = '/home/pi/Desktop/snapshots'
+for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    if os.path.isfile(file_path) or os.path.islink(file_path):
+        os.unlink(file_path)
+    elif os.path.isdir(file_path):
+        shutil.rmtree(file_path)
+os.mkdir('/home/pi/Desktop/snapshots/humans')
 
 
 
@@ -119,7 +125,6 @@ class MyController(Controller):
 
 
         # Parse input image name and directory.
-        IM_NAME = self.img
 
         # Import TensorFlow libraries
         # If tflite_runtime is installed, import interpreter from tflite_runtime, else import from regular tensorflow
@@ -134,9 +139,6 @@ class MyController(Controller):
         CWD_PATH = os.getcwd()
 
         # Define path to images and grab all image filenames
-
-        PATH_TO_IMAGES = os.path.join(CWD_PATH,IM_NAME)
-        images = glob.glob(PATH_TO_IMAGES)
 
         # Path to .tflite file, which contains the model that is used for object detection
         PATH_TO_CKPT = os.path.join(CWD_PATH,MODEL_NAME,GRAPH_NAME)
@@ -172,38 +174,40 @@ class MyController(Controller):
         input_std = 127.5
 
         # Loop over every image and perform detection
-        for image_path in images:
+
 
             # Load image and resize to expected shape [1xHxWx3]
-            image = cv2.imread(image_path)
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            imH, imW, _ = image.shape
-            image_resized = cv2.resize(image_rgb, (width, height))
-            input_data = np.expand_dims(image_resized, axis=0)
+        image = cv2.imread(self.img)
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        imH, imW, _ = image.shape
+        image_resized = cv2.resize(image_rgb, (width, height))
+        input_data = np.expand_dims(image_resized, axis=0)
 
             # Normalize pixel values if using a floating model (i.e. if model is non-quantized)
-            if floating_model:
-                input_data = (np.float32(input_data) - input_mean) / input_std
+        if floating_model:
+            input_data = (np.float32(input_data) - input_mean) / input_std
 
             # Perform the actual detection by running the model with the image as input
-            interpreter.set_tensor(input_details[0]['index'],input_data)
-            interpreter.invoke()
+        interpreter.set_tensor(input_details[0]['index'],input_data)
+        interpreter.invoke()
 
             # Retrieve detection results
-            boxes = interpreter.get_tensor(output_details[0]['index'])[0] # Bounding box coordinates of detected objects
-            classes = interpreter.get_tensor(output_details[1]['index'])[0] # Class index of detected objects
-            scores = interpreter.get_tensor(output_details[2]['index'])[0] # Confidence of detected objects
+        boxes = interpreter.get_tensor(output_details[0]['index'])[0] # Bounding box coordinates of detected objects
+        classes = interpreter.get_tensor(output_details[1]['index'])[0] # Class index of detected objects
+        scores = interpreter.get_tensor(output_details[2]['index'])[0] # Confidence of detected objects
             #num = interpreter.get_tensor(output_details[3]['index'])[0]  # Total number of detected objects (inaccurate and not needed)
 
             # Loop over all detections and draw detection box if confidence is above minimum threshold
-            for i in range(len(scores)):
-                if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
+        for i in range(len(scores)):
+            if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
                     # Draw label
-                    object_name = labels[int(classes[i])] # Look up object name from "labels" array using class index
-                    if object_name == 'person':
-                        human = True
-                        break
-        print(human)
+                object_name = labels[int(classes[i])] # Look up object name from "labels" array using class index
+                if object_name == 'person':
+                    human = True
+                    print('Human found!', scores[i]*100,"%")
+                    shutil.move(self.img,self.img[:27] + "humans/"+ self.img[27:])
+                    break
+
 
     def on_L2_press(self,value):
         if value == -32767: self.PWM = 0
@@ -273,4 +277,5 @@ class MyEventDefinition(Event):
 
 
 controller = MyController(interface="/dev/input/js0", connecting_using_ds4drv=False, event_definition=MyEventDefinition)
+camera.start_preview()
 controller.listen()
