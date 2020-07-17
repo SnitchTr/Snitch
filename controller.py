@@ -3,7 +3,7 @@ from pyfirmata import Arduino, util
 from picamera import PiCamera
 import shutil
 import os
-from TFLite_detection_image import humancheck()
+from TFLite_detection_image import humancheck
 pic_name = 0
 board = Arduino('/dev/ttyACM0')
 pindretaf = board.get_pin("d:13:o")
@@ -16,7 +16,6 @@ MaxAnalog = 32767
 MinAnalog = -32767
 MaxPWM = 255
 MinPWM = 60
-camera = PiCamera()
 folder = '/home/pi/Desktop/snapshots'
 for filename in os.listdir(folder):
     file_path = os.path.join(folder, filename)
@@ -30,13 +29,20 @@ os.mkdir('/home/pi/Desktop/snapshots/humans')
 
 class State:
     def __init__(self):
-
+        self.is_up_arrow_pressed = False
+        self.is_down_arrow_pressed = False
+        self.is_right_arrow_pressed = False
+        self.is_left_arrow_pressed = False
+        self.is_R1_pressed = False
+        self.pic_name=0
 class MyController(Controller):
     is_up_arrow_pressed = False
     is_down_arrow_pressed = False
     is_right_arrow_pressed = False
     is_left_arrow_pressed = False
     is_R1_pressed = False
+    pic_name=0
+    camera = PiCamera()
     def __init__(self, **kwargs):
         Controller.__init__(self, **kwargs)
 
@@ -98,7 +104,9 @@ class MyController(Controller):
     def on_L1_release(self):
         self.is_R1_pressed = False
     def on_x_press(self):
-        humancheck()
+        humancheck(self)
+
+
     def on_L2_press(self,value):
         if value == -32767: self.PWM = 0
         self.PWM = ((((value + MaxAnalog)/(MaxAnalog*2))*(MaxPWM-MinPWM)+MinPWM)/MaxPWM)
@@ -167,5 +175,4 @@ class MyEventDefinition(Event):
 
 
 controller = MyController(interface="/dev/input/js0", connecting_using_ds4drv=False, event_definition=MyEventDefinition)
-camera.start_preview()
 controller.listen()
