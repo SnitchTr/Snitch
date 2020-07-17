@@ -33,14 +33,14 @@ class State:
         self.is_down_arrow_pressed = False
         self.is_right_arrow_pressed = False
         self.is_left_arrow_pressed = False
-        self.is_R1_pressed = False
+        self.is_L1_pressed = False
         self.pic_name=0
 class MyController(Controller):
     is_up_arrow_pressed = False
     is_down_arrow_pressed = False
     is_right_arrow_pressed = False
     is_left_arrow_pressed = False
-    is_R1_pressed = False
+    is_L1_pressed = False
     pic_name=0
     camera = PiCamera()
     def __init__(self, **kwargs):
@@ -100,9 +100,9 @@ class MyController(Controller):
         self.rightmotorstop()
         self.leftmotorstop()
     def on_L1_press(self):
-        self.is_R1_pressed = True
+        self.is_L1_pressed = True
     def on_L1_release(self):
-        self.is_R1_pressed = False
+        self.is_L1_pressed = False
     def on_x_press(self):
         humancheck(self)
 
@@ -117,14 +117,14 @@ class MyController(Controller):
             self.rightmotorb()
             self.leftmotorb()
         elif self.is_right_arrow_pressed == True:
-            if self.is_R1_pressed == True:
+            if self.is_L1_pressed == True:
                 self.rightmotorb()
                 self.leftmotorf()
             else:
                 self.rightmotorstop()
                 self.leftmotorf()
         elif self.is_left_arrow_pressed == True:
-            if self.is_R1_pressed == True:
+            if self.is_L1_pressed == True:
                 self.rightmotorf()
                 self.leftmotorb()
             else:
