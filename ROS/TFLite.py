@@ -92,10 +92,6 @@ class Human_Detection_Node(object):
         image_resized = cv2.resize(image_rgb, (height, width))
         input_data = np.expand_dims(image_resized, axis=0)
 
-        # Normalize pixel values if using a floating model (i.e. if model is non-quantized)
-        if floating_model:
-            input_data = (np.float32(input_data) - input_mean) / input_std
-
             # Perform the actual detection by running the model with the image as input
         interpreter.set_tensor(input_details[0]['index'],input_data)
         interpreter.invoke()
