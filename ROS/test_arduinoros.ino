@@ -97,7 +97,9 @@ ros::Subscriber<std_msgs::Int8> sub("dir", &messageCb );
 
 void setup()
 { 
-  pinMode(13, OUTPUT);
+   REncoderInit();
+  LEncoderInit();
+  MotorInit();
   nh.initNode();
   nh.subscribe(sub);
   nh.advertise(distance);
@@ -183,4 +185,24 @@ void reset_counter()
   for(byte i=0; i<2;i++){
     pulses[i] = 0;
   }
+}
+void REncoderInit(){
+  pinMode(RencoderB,INPUT);
+  attachInterrupt(digitalPinToInterrupt(RencoderA), Rpulsecounter, RISING);
+}
+void LEncoderInit(){
+  pinMode(LencoderB,INPUT);
+  attachInterrupt(digitalPinToInterrupt(LencoderA), Lpulsecounter, RISING);
+}
+void Rpulsecounter()
+{
+    int val = digitalRead(encoderpinsB[0]);
+    if(val == LOW)pulses[0]--;
+    else if(val == HIGH) pulses[0]++;
+}
+void Lpulsecounter()
+{
+    int val = digitalRead(encoderpinsB[1]);
+    if(val == LOW)pulses[1]--;
+    else if(val == HIGH) pulses[1]++;
 }
